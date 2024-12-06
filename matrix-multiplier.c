@@ -67,7 +67,7 @@ Matrix *matrix_init(int rows, int columns)
  * Function: free_matrix
  * Purpose: free all allocated memory associated with a matrix structure
  * Argument: matrix structure
- * Return: VOID
+ * Return: Void
  */
 void free_matrix(Matrix *matrix)
 {
@@ -88,7 +88,7 @@ void free_matrix(Matrix *matrix)
  *            Matrix *C - pointer to product
  *            int row - row in matrix A that will be mulitplied
  *                      and stored in same row of C
- *  Return: NULL
+ *  Return: Void
  *  Algorithm:
  *  1.For each column in B, calculate the dot product of row 'row'
  *      of A with the column in B
@@ -96,18 +96,6 @@ void free_matrix(Matrix *matrix)
  */
 void multiply_row(Matrix *A, Matrix *B, Matrix *C, int row)
 {
-    // take out later once command line code added,
-    // and move size check to main()
-    if (A->num_columns != B->num_rows)
-    {
-        perror("Matrix multiplication failure: # of columns in A != # of"
-               "rows in B\n");
-        free_matrix(A);
-        free_matrix(B);
-        free_matrix(C);
-        exit(EXIT_FAILURE);
-    }
-
     for (int j = 0; j < B->num_columns; j++)
     {
         // initialize every element in C's current row to 0 to avoid errors
@@ -121,6 +109,12 @@ void multiply_row(Matrix *A, Matrix *B, Matrix *C, int row)
     }
 }
 
+/*
+ * Function: fill_with_random()
+ * Purpose: populate a matrix with random decimal values between 0 and 1
+ * Argument: pointer to Matrix structure
+ * Return: void
+ */
 void fill_with_random(Matrix *matrix)
 {
     for (int i = 0; i < matrix->num_rows; i++)
@@ -132,6 +126,12 @@ void fill_with_random(Matrix *matrix)
     }
 }
 
+/*
+ * Function: print_matrix()
+ * Purpose: prints a formatted matrix
+ * Argument: pointer to Matrix structure
+ * Return: void
+ */
 void print_matrix(Matrix *matrix)
 {
     for (int i = 0; i < matrix->num_rows; i++)
@@ -144,19 +144,55 @@ void print_matrix(Matrix *matrix)
     }
 }
 
+/*
+ * Main function checks for command line usage errors. If no errors, saves
+ * argv entries as integers and uses them to create two matrices A and B
+ * with dimensions A (argv[1], argv[2]) and B (argv[3], argv[4]).
+ * Then it computes the product of A and B, stores the result in matrix C,
+ * and prints out the result.
+ */
 int main(int argc, char **argv)
 {
+
+    if (argc != 5)
+    {
+        fprintf(stderr, "Error: Incorrect number of arguments.\n"
+                        "Usage: matrix-mult <# rows left matrix> "
+                        "<# columns left matrix> <# rows right matrix> "
+                        "<# columns right matrix>\n");
+        return EXIT_FAILURE;
+    }
+
+    int rows_A = atoi(argv[1]);
+    int columns_A = atoi(argv[2]);
+    int rows_B = atoi(argv[3]);
+    int columns_B = atoi(argv[4]);
+
+    if (rows_A <= 0 || columns_A <= 0 || rows_B <= 0 || columns_B <= 0)
+    {
+        fprintf(stderr, "Error: Matrix dimension values must be "
+                        "positive integers.\n");
+        return EXIT_FAILURE;
+    }
+
+    if (columns_A != rows_B)
+    {
+        fprintf(stderr, "Error: Matrix dimensions:\n # of columns in "
+                        "left matrix must equal # of rows in right matrix\n.");
+        return EXIT_FAILURE;
+    }
+
     // seed number generator to change randomization each time program run
     srand(time(NULL));
 
-    Matrix *matrix_A = matrix_init(5, 5);
-    Matrix *matrix_B = matrix_init(5, 5);
-    Matrix *matrix_C = matrix_init(5, 5);
+    Matrix *matrix_A = matrix_init(rows_A, columns_A);
+    Matrix *matrix_B = matrix_init(rows_B, columns_B);
+    Matrix *matrix_C = matrix_init(rows_A, columns_B);
 
     fill_with_random(matrix_A);
     fill_with_random(matrix_B);
 
-    for (int i = 0; i < 5; i++)
+    for (int i = 0; i < rows_A; i++)
     {
         multiply_row(matrix_A, matrix_B, matrix_C, i);
     }
