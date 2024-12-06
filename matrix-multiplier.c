@@ -96,10 +96,12 @@ void free_matrix(Matrix *matrix)
  */
 void multiply_row(Matrix *A, Matrix *B, Matrix *C, int row)
 {
-    // take out later once command line code added, and move size check to main()
+    // take out later once command line code added,
+    // and move size check to main()
     if (A->num_columns != B->num_rows)
     {
-        perror("Matrix muliplication failure: # of rows in A != # of columns in B\n");
+        perror("Matrix multiplication failure: # of columns in A != # of"
+               "rows in B\n");
         free_matrix(A);
         free_matrix(B);
         free_matrix(C);
@@ -121,8 +123,6 @@ void multiply_row(Matrix *A, Matrix *B, Matrix *C, int row)
 
 void fill_with_random(Matrix *matrix)
 {
-    srand(time(NULL)); // seed number generator to change random numbers each program run
-
     for (int i = 0; i < matrix->num_rows; i++)
     {
         for (int j = 0; j < matrix->num_columns; j++)
@@ -132,8 +132,47 @@ void fill_with_random(Matrix *matrix)
     }
 }
 
+void print_matrix(Matrix *matrix)
+{
+    for (int i = 0; i < matrix->num_rows; i++)
+    {
+        for (int j = 0; j < matrix->num_columns; j++)
+        {
+            printf("%.2f ", matrix->data[i][j]);
+        }
+        printf("\n");
+    }
+}
+
 int main(int argc, char **argv)
 {
+    // seed number generator to change randomization each time program run
+    srand(time(NULL));
+
+    Matrix *matrix_A = matrix_init(5, 5);
+    Matrix *matrix_B = matrix_init(5, 5);
+    Matrix *matrix_C = matrix_init(5, 5);
+
+    fill_with_random(matrix_A);
+    fill_with_random(matrix_B);
+
+    for (int i = 0; i < 5; i++)
+    {
+        multiply_row(matrix_A, matrix_B, matrix_C, i);
+    }
+
+    printf("Left Matrix\n");
+    print_matrix(matrix_A);
+
+    printf("Right Matrix\n");
+    print_matrix(matrix_B);
+
+    printf("Product Matrix\n");
+    print_matrix(matrix_C);
+
+    free_matrix(matrix_A);
+    free_matrix(matrix_B);
+    free_matrix(matrix_C);
 
     return 0;
 }
