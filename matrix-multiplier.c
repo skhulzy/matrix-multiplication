@@ -1,10 +1,12 @@
 #include <stdio.h>
 #include <stdlib.h>
+// provides system time, used with rand()
+#include <time.h>
 
 /*
  * matrix structure
  * - stores a matrix
- * - dynmamically allocate matrix structures with matrix_init()
+ * NOTE: dynamically allocate matrix structures with matrix_init()
  */
 
 typedef struct
@@ -15,11 +17,10 @@ typedef struct
 } Matrix;
 
 /*
- * function: matrix_init()
+ * Function: matrix_init()
  * Purpose: dynamically allocate a matrix structure
- * arguments: number of rows, number of columns
- * return: a pointer to the matrix
- *
+ * Arguments: number of rows, number of columns
+ * Return: a pointer to the matrix
  */
 Matrix *matrix_init(int rows, int columns)
 {
@@ -62,6 +63,12 @@ Matrix *matrix_init(int rows, int columns)
     return matrix;
 }
 
+/*
+ * Function: free_matrix
+ * Purpose: free all allocated memory associated with a matrix structure
+ * Argument: matrix structure
+ * Return: VOID
+ */
 void free_matrix(Matrix *matrix)
 {
     for (int i = 0; i < matrix->num_rows; i++)
@@ -70,6 +77,59 @@ void free_matrix(Matrix *matrix)
     }
     free(matrix->data);
     free(matrix);
+}
+
+/*
+ * Function: multiply_row
+ * Purpose: Partially multiply matricies A and B to compute
+ *  firt row of product matrix C
+ * Arguments: Matrix *A - pointer to left factor
+ *            Matrix *B - pointer to right factor
+ *            Matrix *C - pointer to product
+ *            int row - row in matrix A that will be mulitplied
+ *                      and stored in same row of C
+ *  Return: NULL
+ *  Algorithm:
+ *  1.For each column in B, calculate the dot product of row 'row'
+ *      of A with the column in B
+ *  2. Store result in C
+ */
+void multiply_row(Matrix *A, Matrix *B, Matrix *C, int row)
+{
+    // take out later once command line code added, and move size check to main()
+    if (A->num_columns != B->num_rows)
+    {
+        perror("Matrix muliplication failure: # of rows in A != # of columns in B\n");
+        free_matrix(A);
+        free_matrix(B);
+        free_matrix(C);
+        exit(EXIT_FAILURE);
+    }
+
+    for (int j = 0; j < B->num_columns; j++)
+    {
+        // initialize every element in C's current row to 0 to avoid errors
+        // there could be garbage values in the memory location
+        C->data[row][j] = 0;
+
+        for (int i = 0; i < A->num_columns; i++)
+        {
+            C->data[row][j] += A->data[row][i] * B->data[i][j];
+        }
+    }
+}
+
+void fill_with_random(Matrix *matrix)
+{
+    srand(time(NULL)); // seed number generator to change random numbers each program run
+
+    for (int i = 0; i < matrix->num_rows; i++)
+    {
+        for (int j = 0; j < matrix->num_columns; j++)
+        {
+            matrix->data[i][j] = (double)rand() / (double)RAND_MAX;
+        }
+    }
 }
 
 int main(int argc, char **argv)
