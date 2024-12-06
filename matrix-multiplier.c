@@ -1,6 +1,6 @@
 /*
  *NAME
- * matrix-multiplier : multiples two Markov matrices and prints out the product
+ * matrix-multiplier : multiples two matrices and prints out the product
  *
  * Author: Timur Boskailo
  * Date: 12-6-24
@@ -13,6 +13,13 @@
  * The user specifies the dimensions of the two matrices through the command
  * line and their entries are randomly generated. The product of the matricies
  * is computed and the result is printed to stdout.
+ *
+ *FUNCTIONS
+ * matrix_init()        initializes matrix structure
+ * free_matrix()        frees allocated memory associated with matrix structure
+ * mulitply_row()       computes one row of matrix product
+ * fill_with_random()   populates matrix with random decimal values 0<= x < 1
+ * print_matrix()       prints out matrix
  *
  *
  *
