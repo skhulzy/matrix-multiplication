@@ -1,3 +1,22 @@
+/*
+ *NAME
+ * matrix-multiplier : multiples two Markov matrices and prints out the product
+ *
+ * Author: Timur Boskailo
+ * Date: 12-6-24
+ *
+ *SYNOPSIS
+ * matrix-multiplier <# rows left matrix> <# columns left matrix>
+ *                   <# rows right matrix> <# columns right matrix>
+ *
+ *DESCRIPTION
+ * The user specifies the dimensions of the two matrices through the command
+ * line and their entries are randomly generated. The product of the matricies
+ * is computed and the result is printed to stdout.
+ *
+ *
+ *
+ */
 #include <stdio.h>
 #include <stdlib.h>
 // provides system time, used with rand()
